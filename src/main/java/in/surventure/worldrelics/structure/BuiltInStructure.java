@@ -82,10 +82,10 @@ public class BuiltInStructure {
 
         Location base = centerLoc.getBlock().getLocation();
 
-        // 1. Clear 9x9x7 air volume above structure floor so structure is never buried in terrain/trees
+        // 1. Clear 9x9x15 air volume above structure floor so structure and pedestal item are never buried/pushed by trees
         for (int x = -4; x <= 4; x++) {
             for (int z = -4; z <= 4; z++) {
-                for (int y = 1; y <= 7; y++) {
+                for (int y = 1; y <= 15; y++) {
                     Block airBlock = base.clone().add(x, y, z).getBlock();
                     if (!airBlock.getType().isAir()) {
                         originalBlocks.put(airBlock.getLocation(), airBlock.getType());

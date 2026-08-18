@@ -191,6 +191,7 @@ public class RelicManager {
         }
 
         plugin.getItemFactory().updateOwnerData(item, player.getUniqueId());
+        player.getInventory().addItem(item);
         plugin.getDatabaseManager().saveOrUpdateActiveRelic(activeRelic);
 
         RelicDefinition def = plugin.getConfigManager().getRelicDefinition(activeRelic.getRelicTypeId());

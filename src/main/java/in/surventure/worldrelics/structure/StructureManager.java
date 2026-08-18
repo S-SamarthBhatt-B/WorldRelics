@@ -67,13 +67,17 @@ public class StructureManager {
             activeGuardians.addAll(mobs);
         }
 
-        // Floating Relic Item Entity perfectly centered on pedestal at (0.5, 2.5, 0.5)
-        Location itemLoc = spawnLoc.clone().add(0.5, 2.5, 0.5);
+        // Floating Relic Item Entity perfectly centered on pedestal at (0.5, 3.2, 0.5)
+        Location itemLoc = spawnLoc.clone().add(0.5, 3.2, 0.5);
         if (itemLoc.getWorld() != null) {
             activeRelicItemEntity = itemLoc.getWorld().dropItem(itemLoc, relicItem);
+            activeRelicItemEntity.teleport(itemLoc);
             activeRelicItemEntity.setPersistent(true);
             activeRelicItemEntity.setUnlimitedLifetime(true);
             activeRelicItemEntity.setGlowing(true);
+            activeRelicItemEntity.setGravity(false);
+            activeRelicItemEntity.setCanPlayerPickup(false);
+            activeRelicItemEntity.setPickupDelay(32767);
             activeRelicItemEntity.setVelocity(new org.bukkit.util.Vector(0, 0, 0));
 
             // Spawn Floating Hologram Display above pedestal
@@ -86,7 +90,7 @@ public class StructureManager {
                 String rarity = def != null ? def.getRarity().getDisplayName() : "LEGENDARY";
 
                 activeHologram.text(MiniMessage.miniMessage().deserialize(
-                        "⚡ <name> ⚡\n<rarity>\n<yellow>[ Right-Click Pedestal to Channel ]</yellow>",
+                        "⚡ <name> ⚡\n<rarity>\n<yellow>[ Right-Click Pedestal to Claim ]</yellow>",
                         Placeholder.parsed("name", name),
                         Placeholder.parsed("rarity", rarity)
                 ));
@@ -112,96 +116,38 @@ public class StructureManager {
     }
 
     public boolean isChanneling(Player player) {
-        return activeChannelingTasks.containsKey(player.getUniqueId());
+        return false;
     }
 
     public void cancelChanneling(Player player, String reason) {
-        BukkitTask task = activeChannelingTasks.remove(player.getUniqueId());
-        if (task != null) {
-            task.cancel();
-            channelingCooldowns.put(player.getUniqueId(), System.currentTimeMillis() + 10000L); // 10s cooldown
-            if (reason != null && player.isOnline()) {
-                player.sendMessage(MiniMessage.miniMessage().deserialize(reason));
-            }
-        }
     }
 
-    public void startChanneling(Player player) {
-        if (player == null || isChanneling(player)) return;
+    public void claimPedestalRelic(Player player) {
+        if (player == null) return;
 
-        long now = System.currentTimeMillis();
-        long cd = channelingCooldowns.getOrDefault(player.getUniqueId(), 0L);
-        if (now < cd) {
-            long remaining = (cd - now) / 1000 + 1;
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<red>❌ You must wait <yellow>" + remaining + "s</yellow> before attempting to channel again!</red>"));
-            return;
-        }
-
-        ActiveRelic relic = plugin.getRelicManager().getActiveRelic();
-        if (relic == null || relic.getStatus() != in.surventure.worldrelics.model.RelicState.AVAILABLE) {
+        ActiveRelic currentRelic = plugin.getRelicManager().getActiveRelic();
+        if (currentRelic == null || currentRelic.getStatus() != in.surventure.worldrelics.model.RelicState.AVAILABLE) {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<red>No claimable relic at this pedestal.</red>"));
             return;
         }
 
-        RelicDefinition def = plugin.getConfigManager().getRelicDefinition(relic.getRelicTypeId());
-        String relicName = def != null ? def.getDisplayName() : relic.getRelicTypeId();
-
-        Location startLoc = player.getLocation().clone();
-        long startTime = System.currentTimeMillis();
-        long totalMs = 5000L;
-
-        player.sendMessage(MiniMessage.miniMessage().deserialize(
-                "<gold>⏳ Started channeling <name>... Hold steady for 5 seconds!</gold>",
-                Placeholder.parsed("name", relicName)
-        ));
-
-        BukkitTask task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            if (!player.isOnline()) {
-                cancelChanneling(player, null);
-                return;
-            }
-
-            // Check movement
-            if (player.getLocation().distanceSquared(startLoc) > 9.0) {
-                cancelChanneling(player, "<red>❌ Channeling interrupted! You moved too far away.</red>");
-                return;
-            }
-
-            long elapsed = System.currentTimeMillis() - startTime;
-            long remainingSec = Math.max(1, (totalMs - elapsed) / 1000 + 1);
-
-            // Relic Surge Defense Wave & Soundscapes
-            Location pLoc = player.getLocation().add(0, 1, 0);
-            player.getWorld().spawnParticle(Particle.DRAGON_BREATH, pLoc, 15, 0.5, 1.0, 0.5, 0.05);
-            player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, pLoc, 10, 0.5, 0.5, 0.5, 0.1);
-            player.getWorld().playSound(pLoc, Sound.BLOCK_BEACON_AMBIENT, 1.0f, 1.5f);
-
-            // Actionbar update
-            player.sendActionBar(MiniMessage.miniMessage().deserialize(
-                    "⏳ Channeling <name>... <yellow><time>s remaining</yellow>",
-                    Placeholder.parsed("name", relicName),
-                    Placeholder.unparsed("time", String.valueOf(remainingSec))
-            ));
-
-            if (elapsed >= totalMs) {
-                cancelChanneling(player, null);
-                if (activeRelicItemEntity != null && activeRelicItemEntity.isValid()) {
-                    ItemStack itemStack = activeRelicItemEntity.getItemStack();
-                    boolean success = plugin.getRelicManager().claimRelic(player, itemStack);
-                    if (success) {
-                        if (activeHologram != null && activeHologram.isValid()) {
-                            activeHologram.remove();
-                            activeHologram = null;
-                        }
-                        activeRelicItemEntity.remove();
-                        player.getWorld().playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.5f, 1.0f);
-                        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
-                    }
+        RelicDefinition currentDef = plugin.getConfigManager().getRelicDefinition(currentRelic.getRelicTypeId());
+        if (currentDef != null) {
+            ItemStack relicItem = plugin.getItemFactory().createRelicItem(currentRelic, currentDef);
+            boolean success = plugin.getRelicManager().claimRelic(player, relicItem);
+            if (success) {
+                if (activeHologram != null && activeHologram.isValid()) {
+                    activeHologram.remove();
+                    activeHologram = null;
                 }
+                if (activeRelicItemEntity != null && activeRelicItemEntity.isValid()) {
+                    activeRelicItemEntity.remove();
+                    activeRelicItemEntity = null;
+                }
+                player.getWorld().playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.5f, 1.0f);
+                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
             }
-        }, 0L, 5L);
-
-        activeChannelingTasks.put(player.getUniqueId(), task);
+        }
     }
 
     public boolean isWithinProtectedArea(Location loc) {
@@ -231,6 +177,23 @@ public class StructureManager {
             }
         }
         activeGuardians.clear();
+
+        // World entity sweep for any orphaned Guardians or TextDisplays
+        if (activeStructureCenter != null && activeStructureCenter.getWorld() != null) {
+            for (org.bukkit.entity.Entity entity : activeStructureCenter.getWorld().getNearbyEntities(activeStructureCenter, 30, 30, 30)) {
+                if (entity instanceof TextDisplay) {
+                    entity.remove();
+                } else if (entity instanceof LivingEntity le) {
+                    if (le.getCustomName() != null && le.getCustomName().contains("Relic Guardian")) {
+                        le.remove();
+                    }
+                } else if (entity instanceof Item itemEnt) {
+                    if (plugin.getItemFactory().isRelicItem(itemEnt.getItemStack())) {
+                        itemEnt.remove();
+                    }
+                }
+            }
+        }
 
         // Restore blocks
         for (Map.Entry<Location, Material> entry : originalBlockState.entrySet()) {

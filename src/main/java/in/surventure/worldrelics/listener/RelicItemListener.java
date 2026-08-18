@@ -30,6 +30,13 @@ public class RelicItemListener implements Listener {
         Item itemEntity = event.getItem();
         ItemStack item = itemEntity.getItemStack();
 
+        // Prevent pickup if this is the active floating pedestal item entity
+        Item activePedestalItem = plugin.getRelicManager().getStructureManager().getActiveRelicItemEntity();
+        if (activePedestalItem != null && itemEntity.equals(activePedestalItem)) {
+            event.setCancelled(true);
+            return;
+        }
+
         if (!plugin.getItemFactory().isRelicItem(item)) return;
 
         ActiveRelic relic = plugin.getRelicManager().getActiveRelic();
@@ -47,12 +54,21 @@ public class RelicItemListener implements Listener {
             return;
         }
 
-        // Claim relic if unclaimed or transferred
+        // Claim relic if dropped from dead owner
         if (relic.getStatus() == RelicState.AVAILABLE || relic.getOwnerUuid() == null || !relic.getOwnerUuid().equals(player.getUniqueId())) {
             boolean success = plugin.getRelicManager().claimRelic(player, item);
             if (!success) {
                 event.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler
+    public void onEntityInteract(org.bukkit.event.player.PlayerInteractEntityEvent event) {
+        Item activePedestalItem = plugin.getRelicManager().getStructureManager().getActiveRelicItemEntity();
+        if (activePedestalItem != null && (event.getRightClicked().equals(activePedestalItem) || event.getRightClicked() instanceof org.bukkit.entity.TextDisplay)) {
+            event.setCancelled(true);
+            plugin.getRelicManager().getStructureManager().claimPedestalRelic(event.getPlayer());
         }
     }
 
@@ -93,15 +109,6 @@ public class RelicItemListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDamage(org.bukkit.event.entity.EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (plugin.getRelicManager().getStructureManager().isChanneling(player)) {
-                plugin.getRelicManager().getStructureManager().cancelChanneling(player, "❌ Channeling interrupted by damage!");
-            }
-        }
-    }
-
-    @EventHandler
     public void onPedestalInteract(org.bukkit.event.player.PlayerInteractEvent event) {
         if (event.getAction() != org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK) return;
         if (event.getClickedBlock() == null) return;
@@ -110,15 +117,13 @@ public class RelicItemListener implements Listener {
         Location structureCenter = plugin.getRelicManager().getStructureManager().getActiveStructureCenter();
         if (structureCenter == null) return;
 
-        // Check if clicked block is the pedestal (center at Y+2)
-        Location pedestalLoc = structureCenter.clone().add(0, 2, 0);
-        if (clickedLoc.getBlockX() == pedestalLoc.getBlockX() &&
-                clickedLoc.getBlockY() == pedestalLoc.getBlockY() &&
-                clickedLoc.getBlockZ() == pedestalLoc.getBlockZ()) {
+        // Check if clicked block is near pedestal (within 3 blocks of structure center)
+        if (clickedLoc.getWorld().equals(structureCenter.getWorld()) &&
+                clickedLoc.distanceSquared(structureCenter) <= 12.0) {
 
             event.setCancelled(true);
             Player player = event.getPlayer();
-            plugin.getRelicManager().getStructureManager().startChanneling(player);
+            plugin.getRelicManager().getStructureManager().claimPedestalRelic(player);
         }
     }
 

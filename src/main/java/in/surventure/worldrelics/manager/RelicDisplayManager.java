@@ -109,7 +109,7 @@ public class RelicDisplayManager {
             if (def != null) {
                 switch (def.getId().toLowerCase()) {
                     case "phoenix_heart", "inferno_core" -> particle = Particle.FLAME;
-                    case "thunder_core" -> particle = Particle.ELECTRIC_SPARK;
+                    case "thunder_core" -> particle = Particle.CRIT;
                     case "frost_crown" -> particle = Particle.SNOWFLAKE;
                     case "void_eye" -> particle = Particle.DRAGON_BREATH;
                     case "blood_relic" -> particle = Particle.REDSTONE;
