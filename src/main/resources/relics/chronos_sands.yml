@@ -1,0 +1,36 @@
+id: chronos_sands
+display-name: "<gradient:#FFD700:#DAA520><bold>Chronos Sands</bold></gradient>"
+material: CLOCK
+custom-model-data: 10009
+rarity: LEGENDARY
+weight: 5
+structure-type: STORM_ALTAR
+
+lifetime:
+  min-days: 10
+  max-days: 15
+
+lore:
+  - "<gray>An ancient hourglass holding the golden sands of temporal control.</gray>"
+  - ""
+  - "<gold><bold>⚡ PASSIVE POWERS:</bold></gold>"
+  - "<gray>• </gray><yellow>Speed I (Permanent)</yellow>"
+  - "<gray>• </gray><yellow>Haste I (Permanent)</yellow>"
+  - ""
+  - "<gold><bold>⏳ ACTIVE ABILITY:</bold></gold> <yellow>Time Warp</yellow>"
+  - "<gray>• </gray><dark_gray>Cooldown: 60 seconds</dark_gray>"
+  - "<gray>• </gray><italic><yellow>Right-Click to rewind 5 seconds back in time to your previous location and restore your health.</yellow></italic>"
+
+passive:
+  speed:
+    enabled: true
+    amplifier: 0
+  fast-digging:
+    enabled: true
+    amplifier: 0
+
+abilities:
+  time-warp:
+    enabled: true
+    cooldown: 60
+    rewind-seconds: 5

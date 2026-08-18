@@ -1,0 +1,32 @@
+id: abyssal_anchor
+display-name: "<gradient:#2F4F4F:#000000><bold>Abyssal Anchor</bold></gradient>"
+material: ANVIL
+custom-model-data: 10014
+rarity: MYTHIC
+weight: 1
+structure-type: BLOOD_ALTAR
+
+lifetime:
+  min-days: 10
+  max-days: 15
+
+lore:
+  - "<gray>A colossal dark iron anchor bound by primordial gravitational force.</gray>"
+  - ""
+  - "<gold><bold>⚡ PASSIVE POWERS:</bold></gold>"
+  - "<gray>• </gray><yellow>Resistance II & 100% Knockback Resistance</yellow>"
+  - ""
+  - "<gold><bold>⚓ ACTIVE ABILITY:</bold></gold> <yellow>Gravity Slam</yellow>"
+  - "<gray>• </gray><dark_gray>Cooldown: 60 seconds</dark_gray>"
+  - "<gray>• </gray><italic><yellow>Right-Click to drag all nearby foes within 12 blocks toward you, then slam the ground dealing heavy damage.</yellow></italic>"
+
+passive:
+  resistance:
+    enabled: true
+    amplifier: 1
+
+abilities:
+  gravity-slam:
+    enabled: true
+    cooldown: 60
+    radius: 12.0

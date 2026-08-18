@@ -1,0 +1,32 @@
+id: guardian_heart
+display-name: "<gradient:#2E8B57:#00FF7F><bold>Guardian Heart</bold></gradient>"
+material: SHIELD
+custom-model-data: 10005
+rarity: RARE
+weight: 25
+structure-type: GUARDIAN_FORTRESS
+
+lifetime:
+  min-days: 10
+  max-days: 15
+
+lore:
+  - "<gray>A titanium scale core taken from the heart of a sunken titan guardian.</gray>"
+  - ""
+  - "<gold><bold>⚡ PASSIVE POWERS:</bold></gold>"
+  - "<gray>• </gray><yellow>Resistance II (Permanent)</yellow>"
+  - ""
+  - "<gold><bold>🛡️ ACTIVE ABILITY:</bold></gold> <yellow>Guardian Shield</yellow>"
+  - "<gray>• </gray><dark_gray>Cooldown: 60 seconds</dark_gray>"
+  - "<gray>• </gray><italic><yellow>Right-Click to activate a titan barrier reducing incoming damage by 80% for 8s.</yellow></italic>"
+
+passive:
+  resistance:
+    enabled: true
+    amplifier: 1
+
+abilities:
+  guardian-shield:
+    enabled: true
+    cooldown: 60
+    duration-seconds: 8

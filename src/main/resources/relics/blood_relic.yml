@@ -1,0 +1,32 @@
+id: blood_relic
+display-name: "<gradient:#8B0000:#FF0000><bold>Blood Relic</bold></gradient>"
+material: REDSTONE_BLOCK
+custom-model-data: 10006
+rarity: COMMON
+weight: 60
+structure-type: BLOOD_ALTAR
+
+lifetime:
+  min-days: 10
+  max-days: 15
+
+lore:
+  - "<gray>A sinister crimson stone pulsing with an unquenchable thirst for combat.</gray>"
+  - ""
+  - "<gold><bold>⚡ PASSIVE POWERS:</bold></gold>"
+  - "<gray>• </gray><yellow>Strength I (Permanent)</yellow>"
+  - ""
+  - "<gold><bold>🩸 ACTIVE ABILITY:</bold></gold> <yellow>Blood Surge</yellow>"
+  - "<gray>• </gray><dark_gray>Cooldown: 40 seconds</dark_gray>"
+  - "<gray>• </gray><italic><yellow>Right-Click to siphon combat vitality, healing 3 hearts and boosting melee power.</yellow></italic>"
+
+passive:
+  strength:
+    enabled: true
+    amplifier: 0
+
+abilities:
+  blood-surge:
+    enabled: true
+    cooldown: 40
+    heal-amount: 6.0

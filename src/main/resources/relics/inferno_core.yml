@@ -1,0 +1,33 @@
+id: inferno_core
+display-name: "<gradient:#FF1493:#FF4500><bold>Inferno Core</bold></gradient>"
+material: MAGMA_BLOCK
+custom-model-data: 10008
+rarity: COMMON
+weight: 60
+structure-type: VOLCANIC_ALTAR
+
+lifetime:
+  min-days: 10
+  max-days: 15
+
+lore:
+  - "<gray>A molten core containing the blazing flames of the Nether core.</gray>"
+  - ""
+  - "<gold><bold>⚡ PASSIVE POWERS:</bold></gold>"
+  - "<gray>• </gray><yellow>Fire Resistance (Permanent)</yellow>"
+  - ""
+  - "<gold><bold>🌋 ACTIVE ABILITY:</bold></gold> <yellow>Inferno Burst</yellow>"
+  - "<gray>• </gray><dark_gray>Cooldown: 50 seconds</dark_gray>"
+  - "<gray>• </gray><italic><yellow>Right-Click to trigger a fiery lava eruption igniting all nearby targets.</yellow></italic>"
+
+passive:
+  fire-resistance:
+    enabled: true
+    amplifier: 0
+
+abilities:
+  inferno-burst:
+    enabled: true
+    cooldown: 50
+    radius: 6
+    fire-seconds: 5

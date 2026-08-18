@@ -1,0 +1,47 @@
+prefix: "<gradient:#FF8C00:#FFD700><bold>WorldRelics</bold></gradient> <dark_gray>»</dark_gray> "
+
+relic-spawned-broadcast: |
+  <yellow>════════════════════════════════════════════</yellow>
+  <gold><bold>      🌍 A NEW WORLD RELIC HAS AWAKENED</bold></gold>
+  <yellow>════════════════════════════════════════════</yellow>
+  <gray>A mysterious relic, <gold><relic_name></gold><gray>, has appeared!</gray>
+  <gray>Somewhere in the world, its power awaits a new owner.</gray>
+  <yellow>Find it. Claim it. Survive.</yellow>
+  <yellow>════════════════════════════════════════════</yellow>
+
+relic-claimed-broadcast: |
+  <gold>⚡ <bold>WORLD RELIC CLAIMED!</bold></gold>
+  <yellow><player_name></yellow> <gray>has claimed the</gray> <gold><relic_name></gold><gray>!</gray>
+  <gold>💰 A bounty of <yellow>$<bounty_amount></yellow> has been placed on <yellow><player_name></yellow>!</gold>
+  <red>The hunt has begun.</red>
+
+relic-bounty-claimed-broadcast: |
+  <gold>💰 <bold>RELIC BOUNTY CLAIMED!</bold></gold>
+  <yellow><killer_name></yellow> <gray>has slain the relic owner</gray> <yellow><owner_name></yellow> <gray>and collected the</gray> <gold>$<bounty_amount></gold> <gray>relic bounty!</gray>
+
+relic-dropped-broadcast: |
+  <red>💀 <bold>RELIC OWNER ELIMINATED!</bold></red>
+  <yellow><player_name></yellow> <gray>has lost the</gray> <gold><relic_name></gold><gray>!</gray>
+  <green>The relic is now claimable in the wild.</green>
+
+relic-expired-broadcast: |
+  <red>⏳ <bold>WORLD RELIC EXPIRED</bold></red>
+  <gray>The </gray><gold><relic_name></gold> <gray>has vanished back into legend.</gray>
+  <yellow>The world is waiting for a new relic...</yellow>
+
+relic-status: |
+  <gold><bold>🌍 WORLD RELIC STATUS</bold></gold>
+  <gray>Relic:</gray> <gold><relic_name></gold> <dark_gray>(<rarity>)</dark_gray>
+  <gray>Owner:</gray> <yellow><owner_name></yellow>
+  <gray>Status:</gray> <green><status></green>
+  <gray>Time Remaining:</gray> <aqua><time_remaining></aqua>
+
+relic-locate-claimed: "<red>The relic is held by <yellow><owner_name></yellow>!</red>"
+relic-locate-unclaimed: "<gray>🧭 <gold><relic_name></gold> is located at <yellow>X: <x>, Y: <y>, Z: <z></yellow> in <aqua><world></aqua> (<gold><direction></gold>, <yellow><distance> blocks away</yellow>).</gray>"
+
+relic-locate-no-relic: "<red>There is currently no active relic in the world.</red>"
+
+no-permission: "<red>You do not have permission to execute this command.</red>"
+command-reload: "<green>WorldRelics configuration and relics successfully reloaded.</green>"
+command-reset-confirm: "<red>⚠️ Warning: Resetting the relic will destroy the current relic and wipe active progress. Run <yellow>/wr reset confirm</yellow> to proceed.</red>"
+command-reset-success: "<green>The World Relic system has been reset.</green>"

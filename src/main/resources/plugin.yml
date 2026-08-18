@@ -1,0 +1,38 @@
+name: WorldRelics
+version: '${version}'
+main: in.surventure.worldrelics.WorldRelicsPlugin
+api-version: '1.20'
+description: 'A core Surventure SMP plugin introducing unique server-wide World Relics.'
+author: Surventure Team
+softdepend:
+  - Vault
+  - WorldGuard
+  - GriefPrevention
+  - Lands
+
+commands:
+  worldrelic:
+    description: Primary command for WorldRelics.
+    aliases: [wr, relic]
+    usage: /worldrelic [status|locate|info|list|menu|spawn|despawn|reset|give|reload]
+    permission: worldrelics.command.use
+
+permissions:
+  worldrelics.admin:
+    description: Full administrative access to WorldRelics commands.
+    default: op
+  worldrelics.command.use:
+    description: Access to basic player commands.
+    default: true
+  worldrelics.command.status:
+    description: View relic status.
+    default: true
+  worldrelics.command.info:
+    description: View detailed relic information.
+    default: true
+  worldrelics.command.locate:
+    description: Locate approximate relic position.
+    default: true
+  worldrelics.command.menu:
+    description: Open relic GUI menu.
+    default: true

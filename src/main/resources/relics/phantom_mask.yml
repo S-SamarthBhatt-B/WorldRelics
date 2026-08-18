@@ -1,0 +1,32 @@
+id: phantom_mask
+display-name: "<gradient:#708090:#D3D3D3><bold>Phantom Mask</bold></gradient>"
+material: CARVED_PUMPKIN
+custom-model-data: 10007
+rarity: MYTHIC
+weight: 1
+structure-type: PHANTOM_TEMPLE
+
+lifetime:
+  min-days: 10
+  max-days: 15
+
+lore:
+  - "<gray>A spectral veil worn by forgotten void assassins.</gray>"
+  - ""
+  - "<gold><bold>⚡ PASSIVE POWERS:</bold></gold>"
+  - "<gray>• </gray><yellow>Speed I & Sneak Invisibility</yellow>"
+  - ""
+  - "<gold><bold>👻 ACTIVE ABILITY:</bold></gold> <yellow>Phantom Veil</yellow>"
+  - "<gray>• </gray><dark_gray>Cooldown: 90 seconds</dark_gray>"
+  - "<gray>• </gray><italic><yellow>Right-Click to vanish into true complete invisibility for 10 seconds.</yellow></italic>"
+
+passive:
+  speed:
+    enabled: true
+    amplifier: 0
+
+abilities:
+  phantom-veil:
+    enabled: true
+    cooldown: 90
+    duration-seconds: 10

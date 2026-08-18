@@ -1,0 +1,34 @@
+id: gale_wings
+display-name: "<gradient:#F0FFFF:#ADD8E6><bold>Gale Wings</bold></gradient>"
+material: FEATHER
+custom-model-data: 10013
+rarity: RARE
+weight: 25
+structure-type: PHANTOM_TEMPLE
+
+lifetime:
+  min-days: 10
+  max-days: 15
+
+lore:
+  - "<gray>Enchanted feathers plucked from the lord of sky winds.</gray>"
+  - ""
+  - "<gold><bold>⚡ PASSIVE POWERS:</bold></gold>"
+  - "<gray>• </gray><yellow>Slow Falling & Jump Boost II (Permanent)</yellow>"
+  - ""
+  - "<gold><bold>🪶 ACTIVE ABILITY:</bold></gold> <yellow>Wind Burst</yellow>"
+  - "<gray>• </gray><dark_gray>Cooldown: 25 seconds</dark_gray>"
+  - "<gray>• </gray><italic><yellow>Right-Click to launch 15 blocks into the air while blowing away nearby chasers.</yellow></italic>"
+
+passive:
+  slow-falling:
+    enabled: true
+    amplifier: 0
+  jump-boost:
+    enabled: true
+    amplifier: 1
+
+abilities:
+  wind-burst:
+    enabled: true
+    cooldown: 25

@@ -1,0 +1,36 @@
+id: solar_flare
+display-name: "<gradient:#FF8C00:#FFD700><bold>Solar Flare</bold></gradient>"
+material: GLOWSTONE
+custom-model-data: 10011
+rarity: EPIC
+weight: 10
+structure-type: VOLCANIC_ALTAR
+
+lifetime:
+  min-days: 10
+  max-days: 15
+
+lore:
+  - "<gray>A fragment of stellar plasma burning with blinding sunfire.</gray>"
+  - ""
+  - "<gold><bold>⚡ PASSIVE POWERS:</bold></gold>"
+  - "<gray>• </gray><yellow>Fire Resistance (Permanent)</yellow>"
+  - "<gray>• </gray><yellow>Saturation (Permanent)</yellow>"
+  - ""
+  - "<gold><bold>☀️ ACTIVE ABILITY:</bold></gold> <yellow>Solar Eruption</yellow>"
+  - "<gray>• </gray><dark_gray>Cooldown: 50 seconds</dark_gray>"
+  - "<gray>• </gray><italic><yellow>Right-Click to fire a blinding solar beam igniting and blinding targeted foes.</yellow></italic>"
+
+passive:
+  fire-resistance:
+    enabled: true
+    amplifier: 0
+  saturation:
+    enabled: true
+    amplifier: 0
+
+abilities:
+  solar-eruption:
+    enabled: true
+    cooldown: 50
+    damage: 10.0

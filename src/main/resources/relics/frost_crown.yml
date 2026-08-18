@@ -1,0 +1,33 @@
+id: frost_crown
+display-name: "<gradient:#E0FFFF:#00BFFF><bold>Frost Crown</bold></gradient>"
+material: DIAMOND_HELMET
+custom-model-data: 10003
+rarity: RARE
+weight: 25
+structure-type: FROST_TEMPLE
+
+lifetime:
+  min-days: 10
+  max-days: 15
+
+lore:
+  - "<gray>A crown woven from glacial ice that never melts, cold enough to freeze blood.</gray>"
+  - ""
+  - "<gold><bold>⚡ PASSIVE POWERS:</bold></gold>"
+  - "<gray>• </gray><yellow>Resistance I (Permanent)</yellow>"
+  - ""
+  - "<gold><bold>❄️ ACTIVE ABILITY:</bold></gold> <yellow>Frost Nova</yellow>"
+  - "<gray>• </gray><dark_gray>Cooldown: 45 seconds</dark_gray>"
+  - "<gray>• </gray><italic><yellow>Right-Click to erupt an icy blizzard freezing and slowing all nearby foes for 5s.</yellow></italic>"
+
+passive:
+  resistance:
+    enabled: true
+    amplifier: 0
+
+abilities:
+  frost-nova:
+    enabled: true
+    cooldown: 45
+    radius: 7
+    duration-seconds: 5

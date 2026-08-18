@@ -1,0 +1,33 @@
+id: shadow_heart
+display-name: "<gradient:#4B0082:#191970><bold>Shadow Heart</bold></gradient>"
+material: WITHER_SKELETON_SKULL
+custom-model-data: 10010
+rarity: EPIC
+weight: 10
+structure-type: VOID_CHAMBER
+
+lifetime:
+  min-days: 10
+  max-days: 15
+
+lore:
+  - "<gray>A dark necrotic heart pulsing with void corruption.</gray>"
+  - ""
+  - "<gold><bold>⚡ PASSIVE POWERS:</bold></gold>"
+  - "<gray>• </gray><yellow>Resistance I (Permanent)</yellow>"
+  - ""
+  - "<gold><bold>🌑 ACTIVE ABILITY:</bold></gold> <yellow>Shadow Burst</yellow>"
+  - "<gray>• </gray><dark_gray>Cooldown: 40 seconds</dark_gray>"
+  - "<gray>• </gray><italic><yellow>Right-Click to blind and wither all nearby foes for 6 seconds while granting stealth.</yellow></italic>"
+
+passive:
+  resistance:
+    enabled: true
+    amplifier: 0
+
+abilities:
+  shadow-burst:
+    enabled: true
+    cooldown: 40
+    radius: 8
+    duration-seconds: 6

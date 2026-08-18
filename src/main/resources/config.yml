@@ -1,0 +1,94 @@
+plugin:
+  enabled: true
+  debug: false
+
+spawn:
+  enabled: true
+  min-distance: 3000
+  max-distance: 10000
+  max-attempts: 100
+  chunk-load-limit: 20
+  allowed-worlds:
+    - world
+  initial-delay-seconds: 300
+  min-players: 2
+
+lifetime:
+  min-days: 10
+  max-days: 15
+
+relic-selection:
+  common: 60
+  rare: 25
+  epic: 10
+  legendary: 5
+  mythic: 1
+
+locate:
+  show-exact-coordinates: true
+  show-direction: true
+  show-distance-blocks: true
+
+structure:
+  enabled: true
+  protection:
+    enabled: true
+    radius: 15
+    prevent-block-break: true
+    prevent-block-place: true
+    prevent-explosions: true
+    prevent-fire: true
+
+death:
+  drop-relic: true
+  destroy-on-death: false
+
+disconnect:
+  drop-if-logout: false
+  grace-period-seconds: 30
+
+broadcast:
+  relic-spawned: true
+  relic-claimed: true
+  relic-dropped: true
+  relic-expired: true
+
+actionbar:
+  enabled: true
+  interval: 40
+
+bossbar:
+  enabled: true
+
+database:
+  type: sqlite
+  file: worldrelics.db
+
+integrations:
+  vault: true
+  worldguard: true
+  griefprevention: true
+  lands: true
+
+bounty:
+  enabled: true
+  broadcast-claim: true
+  rewards:
+    common: 10000.0
+    rare: 30000.0
+    epic: 50000.0
+    legendary: 75000.0
+    mythic: 100000.0
+
+guardians:
+  enabled: true
+  count: 4
+  health: 50.0
+
+owner-effects:
+  glowing: true
+  particles: true
+
+visuals:
+  beacon-beam: true
+  beam-height: 40

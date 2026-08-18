@@ -1,0 +1,33 @@
+id: thunder_core
+display-name: "<gradient:#00FFFF:#1E90FF><bold>Thunder Core</bold></gradient>"
+material: NETHER_STAR
+custom-model-data: 10002
+rarity: EPIC
+weight: 10
+structure-type: STORM_ALTAR
+
+lifetime:
+  min-days: 10
+  max-days: 15
+
+lore:
+  - "<gray>A crackling celestial orb containing the condensed fury of an ancient tempest.</gray>"
+  - ""
+  - "<gold><bold>⚡ PASSIVE POWERS:</bold></gold>"
+  - "<gray>• </gray><yellow>Speed II (Permanent)</yellow>"
+  - ""
+  - "<gold><bold>⚡ ACTIVE ABILITY:</bold></gold> <yellow>Storm Strike</yellow>"
+  - "<gray>• </gray><dark_gray>Cooldown: 60 seconds</dark_gray>"
+  - "<gray>• </gray><italic><yellow>Right-Click to call down lightning strikes on targeted enemies dealing heavy damage.</yellow></italic>"
+
+passive:
+  speed:
+    enabled: true
+    amplifier: 1
+
+abilities:
+  storm-strike:
+    enabled: true
+    cooldown: 60
+    radius: 8
+    damage: 8.0
