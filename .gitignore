@@ -1,0 +1,28 @@
+# Gradle
+.gradle/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Minecraft runtime/server files
+run/
+server/
+logs/
+
+# Local database
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment / secrets
+.env
