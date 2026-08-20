@@ -64,6 +64,14 @@ public class RelicAbilityManager {
             cooldownSec = ((Number) config.get("cooldown")).longValue();
         }
 
+        // Tier Cooldown Reduction: Tier II = -25% CD, Tier III = -50% CD
+        int tier = relic.getTier();
+        if (tier == 2) {
+            cooldownSec = Math.max(5L, (long) (cooldownSec * 0.75));
+        } else if (tier >= 3) {
+            cooldownSec = Math.max(3L, (long) (cooldownSec * 0.50));
+        }
+
         long now = System.currentTimeMillis();
         Map<String, Long> playerCd = cooldowns.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>());
         long expireTime = playerCd.getOrDefault(abilityName.toLowerCase(), 0L);
@@ -85,8 +93,12 @@ public class RelicAbilityManager {
 
     public void applyPassiveEffects(Player player, RelicDefinition def) {
         if (player == null || def == null) return;
+        ActiveRelic relic = plugin.getRelicManager().getActiveRelic();
+        int tierBonus = (relic != null && relic.getOwnerUuid() != null && relic.getOwnerUuid().equals(player.getUniqueId())) ? (relic.getTier() - 1) : 0;
+
         for (Map.Entry<PotionEffectType, Integer> entry : def.getPassiveEffects().entrySet()) {
-            player.addPotionEffect(new PotionEffect(entry.getKey(), 40, entry.getValue(), false, false, true));
+            int amplifier = Math.min(4, entry.getValue() + tierBonus);
+            player.addPotionEffect(new PotionEffect(entry.getKey(), 40, amplifier, false, false, true));
         }
     }
 }

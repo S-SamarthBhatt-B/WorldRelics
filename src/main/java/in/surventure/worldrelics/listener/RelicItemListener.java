@@ -69,6 +69,19 @@ public class RelicItemListener implements Listener {
         if (activePedestalItem != null && (event.getRightClicked().equals(activePedestalItem) || event.getRightClicked() instanceof org.bukkit.entity.TextDisplay)) {
             event.setCancelled(true);
             plugin.getRelicManager().getStructureManager().claimPedestalRelic(event.getPlayer());
+            return;
+        }
+
+        // Block placing relic onto ItemFrame or ArmorStand
+        if (event.getRightClicked() instanceof org.bukkit.entity.ItemFrame || event.getRightClicked() instanceof org.bukkit.entity.ArmorStand) {
+            ItemStack main = event.getPlayer().getInventory().getItemInMainHand();
+            ItemStack off = event.getPlayer().getInventory().getItemInOffHand();
+            if (plugin.getItemFactory().isRelicItem(main) || plugin.getItemFactory().isRelicItem(off)) {
+                event.setCancelled(true);
+                event.getPlayer().sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(
+                        "<red>❌ Ancient Relics cannot be stored on item frames or armor stands!</red>"
+                ));
+            }
         }
     }
 
@@ -94,17 +107,80 @@ public class RelicItemListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerDropItem(org.bukkit.event.player.PlayerDropItemEvent event) {
+        if (plugin.getItemFactory().isRelicItem(event.getItemDrop().getItemStack())) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(
+                    "<red>❌ Relics cannot be dropped manually! Only death can sever your bond with the relic.</red>"
+            ));
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(org.bukkit.event.block.BlockPlaceEvent event) {
+        if (plugin.getItemFactory().isRelicItem(event.getItemInHand())) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(
+                    "<red>❌ Relic items cannot be placed as blocks!</red>"
+            ));
+        }
+    }
+
+    @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         ItemStack current = event.getCurrentItem();
         ItemStack cursor = event.getCursor();
 
+        // 1. Block Anvil/Grindstone/Enchanting
         if (event.getInventory().getType() == InventoryType.ANVIL ||
                 event.getInventory().getType() == InventoryType.GRINDSTONE ||
                 event.getInventory().getType() == InventoryType.ENCHANTING) {
             if ((current != null && plugin.getItemFactory().isRelicItem(current)) ||
                     (cursor != null && plugin.getItemFactory().isRelicItem(cursor))) {
                 event.setCancelled(true);
+                return;
             }
+        }
+
+        // 2. Block storing relics in containers (Chest, Ender Chest, Shulker, Barrel, Hopper, Dispenser, etc.)
+        if (event.getInventory().getType() != InventoryType.CRAFTING && event.getInventory().getType() != InventoryType.PLAYER) {
+            boolean isRelic = (current != null && plugin.getItemFactory().isRelicItem(current)) ||
+                              (cursor != null && plugin.getItemFactory().isRelicItem(cursor));
+
+            // Also check hotbar / shift-click transfers into container
+            if (event.isShiftClick() && current != null && plugin.getItemFactory().isRelicItem(current)) {
+                isRelic = true;
+            }
+
+            if (isRelic) {
+                event.setCancelled(true);
+                if (event.getWhoClicked() instanceof Player p) {
+                    p.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(
+                            "<red>❌ Ancient Relics cannot be stored in containers! You must carry it on your person.</red>"
+                    ));
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (event.getInventory().getType() != InventoryType.CRAFTING && event.getInventory().getType() != InventoryType.PLAYER) {
+            if (plugin.getItemFactory().isRelicItem(event.getOldCursor())) {
+                event.setCancelled(true);
+                if (event.getWhoClicked() instanceof Player p) {
+                    p.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(
+                            "<red>❌ Ancient Relics cannot be stored in containers!</red>"
+                    ));
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryMove(InventoryMoveItemEvent event) {
+        if (plugin.getItemFactory().isRelicItem(event.getItem())) {
+            event.setCancelled(true);
         }
     }
 

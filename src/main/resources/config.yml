@@ -55,10 +55,14 @@ broadcast:
 
 actionbar:
   enabled: true
+  format: "⚡ <name> <tier> | <time> remaining"
   interval: 40
 
 bossbar:
   enabled: true
+  title-format: "⚡ <name> <gray>|</gray> Owner: <gold><owner></gold> <gray>|</gray> Time: <aqua><time></aqua>"
+  color: YELLOW
+  overlay: PROGRESS
 
 database:
   type: sqlite
@@ -89,6 +93,53 @@ owner-effects:
   glowing: true
   particles: true
 
+evolution:
+  enabled: true
+  tier-2:
+    kills: 3
+    minutes: 30
+    badge: "<gold>[Tier II Evolved]</gold>"
+  tier-3:
+    kills: 10
+    minutes: 120
+    badge: "<light_purple><bold>[Tier III Mastered]</bold></light_purple>"
+  tier-1-badge: "<gray>[Tier I]</gray>"
+  broadcast-message: "<gradient:#FFD700:#FF8C00><bold>⚡ RELIC EVOLVED! ⚡</bold></gradient>\n<yellow><player_name></yellow>'s <relic_name> has evolved to <gold><bold>TIER <tier></bold></gold>!"
+
+duel:
+  enabled: true
+  request-timeout-seconds: 60
+  countdown-seconds: 5
+
+items:
+  relic-locator:
+    display-name: "<gradient:#FFD700:#FF8C00><bold>Relic Locator</bold></gradient>"
+    lore:
+      - "<gray>An ancient mystical compass tuned to world relics.</gray>"
+      - ""
+      - "<yellow><bold>Right-Click</bold> to locate the active relic.</yellow>"
+  owner-locator:
+    display-name: "<gradient:#FF4500:#FFA500><bold>Relic Owner Tracker</bold></gradient>"
+    lore:
+      - "<gray>An enchanted compass tuned to the current relic owner.</gray>"
+      - ""
+      - "<yellow><bold>Right-Click</bold> to track the live position of the owner.</yellow>"
+
 visuals:
   beacon-beam: true
   beam-height: 40
+
+guide-book:
+  title: "<aqua><bold>WorldRelics Guide</bold></aqua>"
+  author: "<dark_gray>The Ancients</dark_gray>"
+
+  pages:
+    - "<dark_blue><bold>━━ WORLDRELICS ━━</bold></dark_blue>\n\n<dark_gray><bold>ONE WORLD.\nONE RELIC.\nONE OWNER.</bold></dark_gray>\n\nOnly ONE relic exists at a time.\n\nFind it.\nClaim it.\nProtect it."
+    - "<dark_blue><bold>━━ FIND THE RELIC ━━</dark_blue>\n\nA relic awakens somewhere in the world.\n\nIt is hidden inside a special structure.\n\nBuy a <dark_gray><bold>Relic Locator</bold></dark_gray> from the shop to track it."
+    - "<dark_blue><bold>━━ RELIC LOCATOR ━━</dark_blue>\n\nUse the <dark_gray><bold>Relic Locator</bold></dark_gray> to discover the relic's approximate direction and distance.\n\n<dark_red>The exact location remains hidden.</dark_red>\n\nThe hunt is yours to complete."
+    - "<dark_blue><bold>━━ CLAIM THE RELIC ━━</dark_blue>\n\nFind the relic altar.\n\n<dark_gray><bold>Right-click the pedestal</bold></dark_gray> to claim it.\n\nThe first player to claim it becomes the <dark_blue><bold>OWNER.</bold></dark_blue>\n\n<dark_red>Only ONE owner can exist.</dark_red>"
+    - "<dark_blue><bold>━━ RELIC POWERS ━━</dark_blue>\n\nEvery relic has unique powers.\n\n<dark_aqua><bold>PASSIVE</bold></dark_aqua>\nAlways active.\n\n<dark_purple><bold>ACTIVE</bold></dark_purple>\nPowerful abilities with cooldowns."
+    - "<dark_blue><bold>━━ PROTECT IT ━━</dark_blue>\n\nThe relic makes you a target.\n\nOther players may hunt you.\n\n<dark_red><bold>IF YOU DIE, THE RELIC DROPS.</bold></dark_red>\n\nAnother player can claim it."
+    - "<dark_blue><bold>━━ RELIC LIFETIME ━━</dark_blue>\n\n<dark_blue><bold>10–15 MINECRAFT DAYS</bold></dark_blue>\n\nWhen the timer ends, the relic is <dark_red>destroyed</dark_red>.\n\nA new relic awakens."
+    - "<dark_blue><bold>━━ COMMANDS ━━</bold></dark_blue>\n\n<dark_gray><bold>/wr status</bold></dark_gray>\nActive relic & owner\n\n<dark_gray><bold>/wr info</bold></dark_gray>\nRelic information\n\n<dark_gray><bold>/wr menu</bold></dark_gray>\nOpen relic menu"
+    - "<dark_blue><bold>━━ THE ANCIENTS' LAW ━━</bold></dark_blue>\n\n<dark_blue><bold>ONE WORLD.</bold></dark_blue>\n\n<dark_gray><bold>ONE RELIC.</bold></dark_gray>\n\n<dark_aqua><bold>ONE OWNER.</bold></dark_aqua>\n\n<dark_red><bold>Claim it before someone else does.</bold></dark_red>"

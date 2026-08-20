@@ -19,21 +19,33 @@ public class RelicTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
+        boolean isAdmin = sender.hasPermission("worldrelics.admin");
+
         if (args.length == 1) {
-            List<String> sub = List.of("status", "locate", "info", "list", "menu", "top", "duel", "spawn", "despawn", "reset", "give", "reload");
+            List<String> sub = isAdmin
+                    ? List.of("status", "locate", "info", "list", "menu", "top", "duel", "guide", "spawn", "despawn", "reset", "give", "reload")
+                    : List.of("status", "list", "menu", "top", "duel", "guide");
             for (String s : sub) {
                 if (s.toLowerCase().startsWith(args[0].toLowerCase())) {
                     completions.add(s);
                 }
             }
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("give")) {
+        } else if (isAdmin && args.length == 2 && args[0].equalsIgnoreCase("give")) {
             return null; // Player name auto-complete
-        } else if (args.length == 3 && args[0].equalsIgnoreCase("give")) {
+        } else if (isAdmin && args.length == 3 && args[0].equalsIgnoreCase("give")) {
             List<String> options = new ArrayList<>(plugin.getConfigManager().getRelicDefinitions().keySet());
             options.add("locator");
             options.add("owner_locator");
+            options.add("guide");
             for (String id : options) {
                 if (id.toLowerCase().startsWith(args[2].toLowerCase())) {
+                    completions.add(id);
+                }
+            }
+        } else if (isAdmin && args.length == 2 && args[0].equalsIgnoreCase("spawn")) {
+            List<String> options = new ArrayList<>(plugin.getConfigManager().getRelicDefinitions().keySet());
+            for (String id : options) {
+                if (id.toLowerCase().startsWith(args[1].toLowerCase())) {
                     completions.add(id);
                 }
             }

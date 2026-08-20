@@ -19,6 +19,8 @@ public class ActiveRelic {
     private long claimedAt;
     private final long expiresAt;
     private RelicState status;
+    private int tier = 1;
+    private int relicKills = 0;
 
     public ActiveRelic(UUID relicUuid, String relicTypeId, RelicRarity rarity, UUID ownerUuid,
                        String ownerName, String worldName, double x, double y, double z,
@@ -35,6 +37,8 @@ public class ActiveRelic {
         this.claimedAt = claimedAt;
         this.expiresAt = expiresAt;
         this.status = status;
+        this.tier = 1;
+        this.relicKills = 0;
     }
 
     public UUID getRelicUuid() {
@@ -115,5 +119,21 @@ public class ActiveRelic {
     public long getRemainingMillis() {
         long remaining = expiresAt - System.currentTimeMillis();
         return Math.max(0, remaining);
+    }
+
+    public int getTier() {
+        return tier;
+    }
+
+    public void setTier(int tier) {
+        this.tier = Math.max(1, Math.min(3, tier));
+    }
+
+    public int getRelicKills() {
+        return relicKills;
+    }
+
+    public void setRelicKills(int relicKills) {
+        this.relicKills = relicKills;
     }
 }

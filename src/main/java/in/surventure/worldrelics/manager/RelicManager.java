@@ -20,6 +20,7 @@ public class RelicManager {
     private final RelicDisplayManager displayManager;
     private final RelicBountyManager bountyManager;
     private final in.surventure.worldrelics.manager.RelicDuelManager duelManager;
+    private final RelicEvolutionManager evolutionManager;
     private final Random random = new Random();
 
     private final long serverStartTime = System.currentTimeMillis();
@@ -32,6 +33,7 @@ public class RelicManager {
         this.displayManager = new RelicDisplayManager(plugin);
         this.bountyManager = new RelicBountyManager(plugin);
         this.duelManager = new in.surventure.worldrelics.manager.RelicDuelManager(plugin);
+        this.evolutionManager = new RelicEvolutionManager(plugin);
     }
 
     public boolean canSpawnRelic(boolean checkDelay, boolean checkPlayers) {
@@ -91,10 +93,14 @@ public class RelicManager {
     }
 
     public void triggerNewRelicSpawnCycle() {
-        triggerNewRelicSpawnCycle(false);
+        triggerNewRelicSpawnCycle(false, null);
     }
 
     public void triggerNewRelicSpawnCycle(boolean force) {
+        triggerNewRelicSpawnCycle(force, null);
+    }
+
+    public void triggerNewRelicSpawnCycle(boolean force, String forcedRelicTypeId) {
         if (activeRelic != null && activeRelic.getStatus() != RelicState.NO_RELIC && activeRelic.getStatus() != RelicState.EXPIRED) {
             plugin.getLogger().warning("[WorldRelics] Cannot spawn new relic: Active relic already exists!");
             return;
@@ -105,13 +111,22 @@ public class RelicManager {
             return;
         }
 
-        RelicDefinition selectedDef = selectRandomRelicDefinition();
+        RelicDefinition selectedDef = null;
+        if (forcedRelicTypeId != null) {
+            selectedDef = plugin.getConfigManager().getRelicDefinition(forcedRelicTypeId);
+        }
+        if (selectedDef == null) {
+            selectedDef = selectRandomRelicDefinition();
+        }
+
         if (selectedDef == null) {
             plugin.getLogger().severe("[WorldRelics] Failed to select relic: No definitions loaded!");
             return;
         }
 
         plugin.getLogger().info("[WorldRelics] Selected relic: " + selectedDef.getId() + " (" + selectedDef.getRarity() + ")");
+
+        final RelicDefinition finalDef = selectedDef;
 
         locationManager.findSafeLocationAsync().thenAccept(loc -> {
             if (loc == null) {
@@ -121,8 +136,8 @@ public class RelicManager {
 
             Bukkit.getScheduler().runTask(plugin, () -> {
                 UUID relicUuid = UUID.randomUUID();
-                int minDays = selectedDef.getMinDays();
-                int maxDays = selectedDef.getMaxDays();
+                int minDays = finalDef.getMinDays();
+                int maxDays = finalDef.getMaxDays();
                 int selectedMcDays = minDays + (minDays < maxDays ? random.nextInt(maxDays - minDays + 1) : 0);
 
                 // 1 Minecraft Day = 20 real minutes = 1,200,000 milliseconds
@@ -130,7 +145,7 @@ public class RelicManager {
                 long expiresAt = System.currentTimeMillis() + lifetimeMillis;
 
                 activeRelic = new ActiveRelic(
-                        relicUuid, selectedDef.getId(), selectedDef.getRarity(),
+                        relicUuid, finalDef.getId(), finalDef.getRarity(),
                         null, null, loc.getWorld().getName(),
                         loc.getX(), loc.getY(), loc.getZ(),
                         System.currentTimeMillis(), expiresAt, RelicState.AVAILABLE
@@ -138,8 +153,8 @@ public class RelicManager {
 
                 plugin.getDatabaseManager().saveOrUpdateActiveRelic(activeRelic);
 
-                ItemStack relicItem = plugin.getItemFactory().createRelicItem(activeRelic, selectedDef);
-                structureManager.generateRelicStructure(activeRelic, selectedDef, relicItem);
+                ItemStack relicItem = plugin.getItemFactory().createRelicItem(activeRelic, finalDef);
+                structureManager.generateRelicStructure(activeRelic, finalDef, relicItem);
 
                 // Call Event
                 Bukkit.getPluginManager().callEvent(new RelicSpawnEvent(activeRelic, loc));
@@ -147,7 +162,7 @@ public class RelicManager {
                 // Broadcast
                 if (plugin.getConfig().getBoolean("broadcast.relic-spawned", true)) {
                     plugin.getMessageManager().broadcast("relic-spawned-broadcast",
-                            Placeholder.parsed("relic_name", selectedDef.getDisplayName())
+                            Placeholder.parsed("relic_name", finalDef.getDisplayName())
                     );
                 }
 
@@ -235,6 +250,9 @@ public class RelicManager {
             activeRelic.setOwnerName(null);
             activeRelic.setStatus(RelicState.AVAILABLE);
             plugin.getDatabaseManager().saveOrUpdateActiveRelic(activeRelic);
+
+            // Reset evolution back to Tier I on owner death
+            evolutionManager.resetEvolutionOnDeath(activeRelic);
 
             // Wipe owner trackers on owner death
             wipeLocatorsFromInventories(false, true);
@@ -356,5 +374,9 @@ public class RelicManager {
 
     public in.surventure.worldrelics.manager.RelicDuelManager getDuelManager() {
         return duelManager;
+    }
+
+    public RelicEvolutionManager getEvolutionManager() {
+        return evolutionManager;
     }
 }

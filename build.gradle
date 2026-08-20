@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'in.surventure'
-version = '1.1.0'
+version = '1.2.0'
 
 repositories {
     mavenCentral()
@@ -48,6 +48,9 @@ java {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+    options.release = 21
+    options.fork = true
+    options.forkOptions.executable = 'D:/WpSystem/S-1-5-21-2933015267-2808707580-1575901978-1001/AppData/Local/Packages/Microsoft.4297127D64EC6_8wekyb3d8bbwe/LocalCache/Local/runtime/java-runtime-epsilon/windows-x64/java-runtime-epsilon/bin/javac.exe'
 }
 
 test {

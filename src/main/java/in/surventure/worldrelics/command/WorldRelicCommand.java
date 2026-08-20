@@ -40,14 +40,23 @@ public class WorldRelicCommand implements CommandExecutor {
             case "menu" -> handleMenu(sender);
             case "top", "leaderboard" -> handleTop(sender);
             case "duel" -> handleDuel(sender, args);
+            case "guide", "book" -> handleGuide(sender);
             case "spawn" -> handleSpawn(sender, args);
             case "despawn" -> handleDespawn(sender);
             case "reset" -> handleReset(sender, args);
             case "give" -> handleGive(sender, args);
             case "reload" -> handleReload(sender);
-            default -> sender.sendMessage(plugin.getMessageManager().getComponent("prefix").append(
-                    net.kyori.adventure.text.Component.text("Unknown subcommand. Use /wr [status|locate|info|list|menu|top|duel|spawn|despawn|reset|give|reload]", net.kyori.adventure.text.format.NamedTextColor.RED)
-            ));
+            default -> {
+                if (sender.hasPermission("worldrelics.admin")) {
+                    sender.sendMessage(plugin.getMessageManager().getComponent("prefix").append(
+                            net.kyori.adventure.text.Component.text("Unknown subcommand. Use /wr [status|list|menu|top|duel|guide|locate|spawn|despawn|reset|give|reload]", net.kyori.adventure.text.format.NamedTextColor.RED)
+                    ));
+                } else {
+                    sender.sendMessage(plugin.getMessageManager().getComponent("prefix").append(
+                            net.kyori.adventure.text.Component.text("Unknown subcommand. Use /wr [status|list|menu|top|duel|guide]", net.kyori.adventure.text.format.NamedTextColor.RED)
+                    ));
+                }
+            }
         }
 
         return true;
@@ -80,7 +89,7 @@ public class WorldRelicCommand implements CommandExecutor {
     }
 
     private void handleLocate(CommandSender sender) {
-        if (!sender.hasPermission("worldrelics.command.locate")) {
+        if (!sender.hasPermission("worldrelics.admin")) {
             plugin.getMessageManager().sendMessage(sender, "no-permission");
             return;
         }
@@ -186,15 +195,43 @@ public class WorldRelicCommand implements CommandExecutor {
         plugin.getRelicManager().getDuelManager().sendDuelRequest(player, target);
     }
 
+    private void handleGuide(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("This command can only be executed by players.");
+            return;
+        }
+        ItemStack guideBook = plugin.getItemFactory().createGuideBookItem();
+        player.getInventory().addItem(guideBook);
+        player.sendMessage(plugin.getMessageManager().getMiniMessage().deserialize("<gold>📖 Granted WorldRelics Written Guide Book!</gold>"));
+    }
+
     private void handleSpawn(CommandSender sender, String[] args) {
         if (!sender.hasPermission("worldrelics.admin")) {
             plugin.getMessageManager().sendMessage(sender, "no-permission");
             return;
         }
+
+        String forcedRelicId = null;
+        if (args.length >= 2) {
+            String requestedId = args[1].toLowerCase();
+            RelicDefinition def = plugin.getConfigManager().getRelicDefinition(requestedId);
+            if (def == null) {
+                sender.sendMessage(plugin.getMessageManager().getMiniMessage().deserialize(
+                        "<red>❌ Relic definition not found: <yellow>" + requestedId + "</yellow>. Available: <gold>" +
+                        String.join(", ", plugin.getConfigManager().getRelicDefinitions().keySet()) + "</gold></red>"
+                ));
+                return;
+            }
+            forcedRelicId = requestedId;
+        }
+
         sender.sendMessage(plugin.getMessageManager().getComponent("prefix").append(
-                net.kyori.adventure.text.Component.text("Initiating forced relic spawn cycle...", net.kyori.adventure.text.format.NamedTextColor.YELLOW)
+                net.kyori.adventure.text.Component.text(
+                        forcedRelicId != null ? "Initiating forced spawn for relic: " + forcedRelicId + "..." : "Initiating forced random relic spawn cycle...",
+                        net.kyori.adventure.text.format.NamedTextColor.YELLOW
+                )
         ));
-        plugin.getRelicManager().triggerNewRelicSpawnCycle(true);
+        plugin.getRelicManager().triggerNewRelicSpawnCycle(true, forcedRelicId);
     }
 
     private void handleDespawn(CommandSender sender) {
@@ -227,7 +264,7 @@ public class WorldRelicCommand implements CommandExecutor {
             return;
         }
         if (args.length < 3) {
-            sender.sendMessage("Usage: /wr give <player> <relic_id|locator>");
+            sender.sendMessage("Usage: /wr give <player> <relic_id|locator|owner_locator|guide>");
             return;
         }
 
@@ -252,6 +289,13 @@ public class WorldRelicCommand implements CommandExecutor {
             return;
         }
 
+        if (itemType.equals("guide") || itemType.equals("book") || itemType.equals("guide_book")) {
+            ItemStack guideBook = plugin.getItemFactory().createGuideBookItem();
+            target.getInventory().addItem(guideBook);
+            sender.sendMessage("Gave WorldRelics Guide Book to " + target.getName());
+            return;
+        }
+
         RelicDefinition def = plugin.getConfigManager().getRelicDefinition(args[2]);
         if (def == null) {
             sender.sendMessage("Relic definition not found: " + args[2] + " (Use 'locator' to give a Relic Locator compass)");
@@ -265,7 +309,6 @@ public class WorldRelicCommand implements CommandExecutor {
         }
 
         ItemStack item = plugin.getItemFactory().createRelicItem(relic, def);
-        target.getInventory().addItem(item);
         plugin.getRelicManager().claimRelic(target, item);
 
         sender.sendMessage("Gave relic " + def.getId() + " to " + target.getName());

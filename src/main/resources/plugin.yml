@@ -31,8 +31,8 @@ permissions:
     description: View detailed relic information.
     default: true
   worldrelics.command.locate:
-    description: Locate approximate relic position.
-    default: true
+    description: Locate approximate relic position (Admin only).
+    default: op
   worldrelics.command.menu:
     description: Open relic GUI menu.
     default: true
